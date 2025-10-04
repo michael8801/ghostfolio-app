@@ -1,7 +1,8 @@
 name: Deploy app to EC2 instance
 
 on:
-    push
+    push:
+        branches: [ workflow-deploy-app, dev, main ]
 
 jobs:
     build_docker_image:
@@ -25,7 +26,6 @@ jobs:
               env:
                 REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                 REPOSITORY: ${{ secrets.AWS_ECR_REPO }}
-                IMAGE_TAG: ${{ github.sha }}
               run: |
-                  docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-                  docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+                chmod +x .github/docker_image_tagging.sh
+                ./.github/docker_image_tagging.sh
