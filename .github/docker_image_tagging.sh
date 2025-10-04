@@ -16,7 +16,7 @@ elif [ "${GITHUB_REF_TYPE}" = "branch" ] && { [ "${GITHUB_REF_NAME}" = "main" ] 
   TAG_LIST="main ${TAG_LIST}"
 fi
 
-docker build -t "${REGISTRY}/${REPOSITORY}:${SHORT_SHA}" .
+#docker build -t "${REGISTRY}/${REPOSITORY}:${SHORT_SHA}" .
 
 for tag in ${TAG_LIST}; do
   docker tag  "${REGISTRY}/${REPOSITORY}:${SHORT_SHA}" "${REGISTRY}/${REPOSITORY}:${tag}"

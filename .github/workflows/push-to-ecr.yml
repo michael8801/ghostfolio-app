@@ -7,6 +7,10 @@ on:
 jobs:
     build_docker_image:
         runs-on: ubuntu-latest
+        outputs:
+            image_tag: ${{ steps.compute_tag.outputs.image_tag }}
+            registry:  ${{ steps.login_ecr.outputs.registry }}
+            
         steps: 
             - name: Checkout
               uses: actions/checkout@v5
@@ -53,7 +57,7 @@ jobs:
                 username: ${{ secrets.EC2_USER_NAME }}
                 key: ${{ secrets.EC2_SSH_KEY }}
                 source: "docker/docker-compose.yml,.env.example"
-                target: "/opt/app"
+                target: "/home/ubuntu/app"
             
             - name: Deploy to EC2
               uses: appleboy/ssh-action@master
@@ -62,7 +66,7 @@ jobs:
                 username: ${{ secrets.EC2_USER_NAME }}
                 key: ${{ secrets.EC2_SSH_KEY }}
                 script: |
-                    cd /opt/app
+                    cd /home/ubuntu/app
 
                     cp .env.example .env
                     cat >> .env <<EOF
@@ -73,5 +77,6 @@ jobs:
 
                     aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
                     | docker login --username AWS --password-stdin ${{ needs.build_docker_image.outputs.registry }}
-      
+
+                    docker compose -f docker/docker-compose.yml pull
                     docker compose -f docker/docker-compose.yml up -d
