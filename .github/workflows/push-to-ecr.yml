@@ -68,8 +68,8 @@ jobs:
                 script: |
                     cd /home/ubuntu/app
 
-                    cp .env.example .env
-                    cat >> .env <<EOF
+                    cp .env.example docker/.env
+                    cat >> docker/.env <<EOF
                     REGISTRY=${{ secrets.ECR_REGISTRY }}
                     REPOSITORY=${{ secrets.AWS_ECR_REPO }}
                     IMAGE_TAG=${{ needs.build_docker_image.outputs.image_tag }}
