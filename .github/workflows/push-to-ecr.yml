@@ -27,6 +27,10 @@ jobs:
               id: login_ecr
               uses: aws-actions/amazon-ecr-login@v2
 
+            - name: Set registry output
+              id: set_registry
+              run: echo "registry=${{ steps.login_ecr.outputs.registry }}" >> "$GITHUB_OUTPUT"
+
             - id: compute_tag
               run: |
                 if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
