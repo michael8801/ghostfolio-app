@@ -10,7 +10,6 @@ jobs:
 
         outputs:
             image_tag: ${{ steps.compute_tag.outputs.image_tag }}
-            registry:  ${{ steps.set_registry.outputs.registry }}
 
         steps: 
             - name: Checkout
@@ -26,10 +25,6 @@ jobs:
             - name: Login to Amazon ECR
               id: login_ecr
               uses: aws-actions/amazon-ecr-login@v2
-
-            - name: Set registry output
-              id: set_registry
-              run: echo "registry=${{ steps.login_ecr.outputs.registry }}" >> "$GITHUB_OUTPUT"
 
             - id: compute_tag
               run: |
@@ -54,11 +49,6 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v5
-              
-            - name: Debug outputs
-              run: |
-                echo "registry='${{ needs.build_docker_image.outputs.registry }}'"
-                echo "image_tag='${{ needs.build_docker_image.outputs.image_tag }}'"
 
             - name: Copy files to EC2
               uses: appleboy/scp-action@master
@@ -80,13 +70,13 @@ jobs:
 
                     cp .env.example .env
                     cat >> .env <<EOF
-                    REGISTRY=${{ needs.build_docker_image.outputs.registry }}
+                    REGISTRY=${{ secrets.ECR_REGISTRY }}
                     REPOSITORY=${{ secrets.AWS_ECR_REPO }}
                     IMAGE_TAG=${{ needs.build_docker_image.outputs.image_tag }}
                     EOF
 
                     aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
-                    | docker login --username AWS --password-stdin ${{ needs.build_docker_image.outputs.registry }}
+                    | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
 
                     docker compose -f docker/docker-compose.yml pull
                     docker compose -f docker/docker-compose.yml up -d
