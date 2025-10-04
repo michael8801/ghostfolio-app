@@ -9,8 +9,8 @@ jobs:
         runs-on: ubuntu-latest
 
         outputs:
-            image_tag: ${{ steps.compute-tag.outputs.image_tag }}
-            registry:  ${{ steps.login-ecr.outputs.registry }}
+            image_tag: ${{ steps.compute_tag.outputs.image_tag }}
+            registry:  ${{ steps.login_ecr.outputs.registry }}
 
         steps: 
             - name: Checkout
@@ -24,10 +24,10 @@ jobs:
                 aws-region: ${{secrets.AWS_REGION}}
 
             - name: Login to Amazon ECR
-              id: login-ecr
+              id: login_ecr
               uses: aws-actions/amazon-ecr-login@v2
 
-            - id: compute-tag
+            - id: compute_tag
               run: |
                 if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
                   TAG="${GITHUB_REF_NAME}"
@@ -38,7 +38,7 @@ jobs:
         
             - name: Build, tag, and push docker image to Amazon ECR
               env:
-                REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                REGISTRY: ${{ steps.login_ecr.outputs.registry }}
                 REPOSITORY: ${{ secrets.AWS_ECR_REPO }}
               run: |
                 chmod +x .github/docker_image_tagging.sh
