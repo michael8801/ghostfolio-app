@@ -10,7 +10,7 @@ jobs:
 
         outputs:
             image_tag: ${{ steps.compute_tag.outputs.image_tag }}
-            registry:  ${{ steps.login_ecr.outputs.registry }}
+            registry:  ${{ steps.set_registry.outputs.registry }}
 
         steps: 
             - name: Checkout
