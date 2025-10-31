@@ -1,7 +1,7 @@
 name: ghostfolio
 services:
   ghostfolio:
-    image: docker.io/ghostfolio/ghostfolio:latest
+    image: "${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}"
     container_name: ghostfolio
     restart: unless-stopped
     init: true

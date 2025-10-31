@@ -1,0 +1,20 @@
+[Unit]
+Description=Watch docker-compose.yml and redeploy on change
+Wants=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/app
+ExecStart=/bin/bash /home/ubuntu/app/docker/watcher-docker-compose.sh
+Restart=always
+RestartSec=5
+
+StandardOutput=append:/var/log/compose-watcher.log
+StandardError=append:/var/log/compose-watcher.log
+
+
+[Install]
+WantedBy=multi-user.target
+
