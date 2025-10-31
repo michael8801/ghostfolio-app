@@ -14,7 +14,5 @@ RestartSec=5
 StandardOutput=append:/var/log/compose-watcher.log
 StandardError=append:/var/log/compose-watcher.log
 
-
 [Install]
 WantedBy=multi-user.target
-
